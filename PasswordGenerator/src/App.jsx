@@ -6,8 +6,6 @@ function App() {
   const [character,setcharacter] = useState(false) //This useState for the add character in password
   const [Password, setpassword] = useState("") //This useState for the final password
 
-  //useref hook is used to get the referance  
-  const passwordref = useRef(null)
   // Method to generate Password
   // This method is under the useCallback() - it means the all variable data will stored in the case  
   const passwordgenerator = useCallback(()=>{
@@ -21,10 +19,12 @@ function App() {
     }
     setpassword(pass)
   }
-,[length,number,character,setpassword])
-
+  ,[length,number,character,setpassword])
+  
+  //useref hook is used to get the referance  
+  const passwordref = useRef(null)
 const copypasswordclip = useCallback(()=>{
-  passwordref.current?.select()
+  passwordref.current?.select() //here we will used the useref hook to make the text copy effact 
   window.navigator.clipboard.writeText(Password)
 },[Password])
 
@@ -35,13 +35,15 @@ useEffect(()=>{
 
   return (
     <>
-    <div className='w-full max-w-md mx-auto bg-gray-800 m-8 px-4 rounded-xl text-orange-400'>
+    <div className='w-full max-w-md mx-auto bg-gray-800 m-8 px-4 py-5 rounded-xl text-orange-400'>
     <h1 className='font-bold text-center text-3xl p-3'>Password Generator</h1> 
     <div>
-      <input type="text" value={Password} className='inline-block outline-none w-full py-1 px-3 my-3 rounded-md' placeholder='Password' readOnly ref={passwordref}/>
+      {/* This is the input field to show the password  and it have readOnly attrubit it means the user can't edit the text here */}
+      <input type="text" value={Password} className='inline-block outline-none w-full py-1 px-3 my-3 rounded-md text-black font-semibold' placeholder='Password' readOnly ref={passwordref}/>
       <button onClick={copypasswordclip} className='inline-block w-full rounded-lg py-1 my-2 font-bold text-white tracking-wider bg-blue-600 hover:bg-blue-500 duration-500'>COPY</button>
     </div>
     <div>
+      {/* This input range is  it contains the attributs min and max with it we can fixed the range of the input*/}
       <div className='flex items-center justify-center my-3'>
         {/* this input for the password length */}
         <input type="range" min={8} max={40} value={length} 
@@ -71,6 +73,7 @@ useEffect(()=>{
         defaultChecked={character}
         id="characterInput"
         onChange={()=> {
+          // this functino is defined on top in useState and it will reverse the conditions
           setcharacter((prev) => !prev);
         }}
         />
