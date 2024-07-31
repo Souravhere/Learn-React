@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Todoprovider } from './contexts';
-import { useEffect } from 'react';
 
 function App() {
     const [todos, setTodos] = useState([]);
@@ -24,17 +23,24 @@ function App() {
             )
         );
     };
-    useEffect(()=> {
-      const todos = JSON.parse(localStorage.getItem("todos"))
 
-      if (todos && todos.length > 0) {
-        setTodos(todos)
-      }
-    }, [])
+    useEffect(() => {
+        try {
+            const storedTodos = localStorage.getItem('todos');
+            if (storedTodos) {
+                const parsedTodos = JSON.parse(storedTodos);
+                if (Array.isArray(parsedTodos)) {
+                    setTodos(parsedTodos);
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing todos from localStorage', error);
+        }
+    }, []);
 
-    useEffect(()=>{
-      localStorage.setItem("todos",JSON.stringify(todos))
-    },[todos])
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos]);
 
     return (
         <Todoprovider value={{ todos, addTodo, updateTodo, deleteTodo, toggleComplete }}>
